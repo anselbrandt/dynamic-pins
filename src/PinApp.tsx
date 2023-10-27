@@ -9,8 +9,6 @@ import ControlPanel from "./components/ControlPanel";
 import { bbox } from "@turf/turf";
 import { MapRef } from "react-map-gl";
 
-import { Locations } from "./components/Locations";
-
 const pad = 100;
 
 function App() {
@@ -49,7 +47,20 @@ function App() {
         mapRef={mapRef}
       />
       <ControlPanel>
-        <Locations data={data} handleSelectLocation={handleSelectLocation} />
+        <div className="my-2">
+          {data.features.map((feature, index) => (
+            <div key={index}>
+              <button
+                className="btn btn-link"
+                onClick={() =>
+                  handleSelectLocation(feature.geometry.coordinates)
+                }
+              >
+                {feature.properties.name}
+              </button>
+            </div>
+          ))}
+        </div>
       </ControlPanel>
     </div>
   );
