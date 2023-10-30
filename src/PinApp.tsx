@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useCallback, useRef } from "react";
 import { Map } from "./components/PinMap";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 
-import { data } from "./data";
+import { data as featureData } from "./data";
 import ControlPanel from "./components/ControlPanel";
 import { bbox } from "@turf/turf";
 import { MapRef } from "react-map-gl";
@@ -12,8 +12,9 @@ import { MapRef } from "react-map-gl";
 const pad = 100;
 
 function App() {
+  const [data, setData] = useState(null);
   const mapRef = useRef<MapRef>(null);
-  const [minLng, minLat, maxLng, maxLat] = bbox(data);
+  const [minLng, minLat, maxLng, maxLat] = bbox(featureData);
   const bounds = [
     [minLng, minLat],
     [maxLng, maxLat],
@@ -48,13 +49,14 @@ function App() {
       />
       <ControlPanel>
         <div className="my-2">
-          {data.features.map((feature, index) => (
+          {featureData.features.map((feature, index) => (
             <div key={index}>
               <button
                 className="btn btn-link"
-                onClick={() =>
-                  handleSelectLocation(feature.geometry.coordinates)
-                }
+                onClick={() => {
+                  setData(feature);
+                  handleSelectLocation(feature.geometry.coordinates);
+                }}
               >
                 {feature.properties.name}
               </button>
